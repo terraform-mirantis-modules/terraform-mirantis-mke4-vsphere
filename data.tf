@@ -26,8 +26,8 @@ data "vsphere_network" "network" {
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 
-data "vsphere_virtual_machine" "manager_vm_template" {
-  name          = var.manager_vm_template
+data "vsphere_virtual_machine" "controller_vm_template" {
+  name          = var.controller_vm_template
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 

@@ -32,8 +32,12 @@ variable "datastore_cluster" {
 variable "network" {
 }
 
-variable "manager_vm_template" {
-  description = "VM to use as a template for managers"
+variable "network_type" {
+  description = "Type of the network. Can be either 'IPAM' or 'DHCP'"
+}
+
+variable "controller_vm_template" {
+  description = "VM to use as a template for controllers"
 }
 
 variable "worker_vm_template" {
@@ -47,8 +51,8 @@ variable "ssh_public_key_file" {
   description = "Public key for SSH connections to created virtual machines"
 }
 
-variable "quantity_managers" {
-  description = "Number of MKEx manager VMs to create"
+variable "quantity_controllers" {
+  description = "Number of MKEx controller VMs to create"
   default     = 3
 }
 
@@ -57,13 +61,13 @@ variable "quantity_workers" {
   default     = 3
 }
 
-variable "cpu_count_managers" {
-  description = "Number of CPUs in managers VMs"
+variable "cpu_count_controllers" {
+  description = "Number of CPUs in controllers VMs"
   default     = 2
 }
 
-variable "memory_count_managers" {
-  description = "Amount of memory in managers VMs"
+variable "memory_count_controllers" {
+  description = "Amount of memory in controllers VMs"
   default     = 16384
 }
 
@@ -88,27 +92,28 @@ variable "memory_count_workers" {
 #  }))
 #}
 
-variable "ip_range_managers" {
-  description = "IP addresses to be assigned to managers VMs"
+variable "ip_range_controllers" {
+  description = "IP addresses to be assigned to controllers VMs"
+  default     = "192.168.10.2-192.168.10.10"
   type        = string
 }
 
 variable "ip_range_workers" {
   description = "IP addresses to be assigned to worker VMs"
   type        = string
-  default     = ""
+  default     = "192.168.10.11-192.168.10.15"
 }
 
 variable "network_gateway" {
   description = "Gateway IP address to be used as default gateway for VMs"
   type        = string
-  default     = ""
+  default     = "192.168.10.1"
 }
 
 variable "nameserver" {
   description = "DNS to be added to the VM network configuration"
   type        = string
-  default     = ""
+  default     = "8.8.8.8"
 }
 
 variable "cluster_name" {
@@ -126,7 +131,7 @@ variable "dockerhub_password" {
   default     = "password"
 }
 
-variable "manager_disk_size" {
+variable "controller_disk_size" {
   description = "Manager disk size in GBs"
   default     = 40
 }

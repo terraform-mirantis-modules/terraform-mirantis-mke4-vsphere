@@ -9,10 +9,10 @@ metadata:
   namespace: mke
 spec:
   hosts:
-    %{~for manager in module.managers}
+    %{~for controller in module.controllers}
     - role: "controller+worker"
       ssh:
-        address: ${manager.ip_address}
+        address: ${controller.ip_address}
         keyPath: ${var.ssh_private_key_file}
         port: 22
         user: ${var.vm_user}
