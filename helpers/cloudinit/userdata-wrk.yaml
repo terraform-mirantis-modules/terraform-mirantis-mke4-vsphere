@@ -1,0 +1,20 @@
+#cloud-config
+hostname: ${hostname}
+create_hostname_file: true
+fqdn: ${hostname}
+users:
+  - name: ${user}
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    ssh_authorized_keys:
+      - ${ssh_key}
+write_files:
+- content: |
+    [plugins."io.containerd.grpc.v1.cri".registry.configs."registry-1.docker.io".auth]
+      username = "${dockerhub_user}"
+      password = "${dockerhub_password}"
+  path: /etc/k0s/containerd.d/docker-hub-auth.toml 
+runcmd:
+  - 'rm /etc/machine-id'
+  - 'rm /var/lib/dbus/machine-id'
+  - 'dbus-uuidgen --ensure'
+  - 'systemd-machine-id-setup'
