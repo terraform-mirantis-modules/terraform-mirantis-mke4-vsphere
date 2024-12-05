@@ -63,8 +63,12 @@ variable "docker_hub_pass" {
   default     = "password"
 }
 
-variable "vm_user" {
-  description = "Username that will be used to login to the VM"
+#variable "vm_user" {
+#  description = "Username that will be used to login to the VM"
+#}
+
+variable "node_count" {
+  description = "Number of nodes"
 }
 
 variable "firmware" {

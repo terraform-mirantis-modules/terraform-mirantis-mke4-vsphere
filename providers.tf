@@ -7,9 +7,9 @@ terraform {
 }
 
 provider "vsphere" {
-  vsphere_server = var.vsphere_server
-  user           = var.vsphere_user
-  password       = var.vsphere_password
+  vsphere_server = var.vsphere.server
+  user           = var.vsphere.user
+  password       = var.vsphere.password
 
   # Enable this if your vSphere server has a self-signed certificate
   allow_unverified_ssl = true
