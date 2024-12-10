@@ -1,6 +1,6 @@
 variable "vsphere" {
   description = "vSphere environment variables"
-  type = map(object({
+  type = object({
     server = string
     user = string
     password = string
@@ -12,40 +12,6 @@ variable "vsphere" {
   })
   default = null
 }
-
-#variable "vsphere_server" {
-#  description = "URL of vSphere server"
-#}
-#
-#variable "vsphere_user" {
-#  description = "Username for connecting to vSphere"
-#}
-#
-#variable "vsphere_password" {
-#  description = "Password for vSphere connection"
-#}
-#
-#variable "datacenter" {
-#  default = ""
-#}
-#
-#variable "resource_pool" {
-#}
-#
-#variable "folder" {
-#  default = ""
-#}
-#
-#variable "datastore" {
-#  default = null
-#}
-#
-#variable "datastore_cluster" {
-#  default = null
-#}
-#
-#variable "network" {
-#}
 
 variable "nodegroups" {
   description = "A map of machine group definitions"
@@ -60,57 +26,12 @@ variable "nodegroups" {
     role         = string # currently "worker" or "controller+worker" only
     user = string
     firmware = string
-
+    network_config_name = string
   }))
   default = {}
 }
 
-#variable "manager_vm_template" {
-#  description = "VM to use as a template for managers"
-#}
-#
-#variable "worker_vm_template" {
-#  description = "VM to use as a template for workers"
-#}
-#
-#variable "ssh_private_key_file" {
-#  description = "Private key for SSH connections to created virtual machines"
-#}
-#variable "ssh_public_key_file" {
-#  description = "Public key for SSH connections to created virtual machines"
-#}
-#
-#variable "quantity_managers" {
-#  description = "Number of MKEx manager VMs to create"
-#  default     = 3
-#}
-#
-#variable "quantity_workers" {
-#  description = "Number of MKEx worker VMs to create"
-#  default     = 3
-#}
-#
-#variable "cpu_count_managers" {
-#  description = "Number of CPUs in managers VMs"
-#  default     = 2
-#}
-#
-#variable "memory_count_managers" {
-#  description = "Amount of memory in managers VMs"
-#  default     = 16384
-#}
-#
-#variable "cpu_count_workers" {
-#  description = "Number of CPUs in workers VMs"
-#  default     = 4
-#}
-#
-#variable "memory_count_workers" {
-#  description = "Amount of memory in workers VMs"
-#  default     = 16384
-#}
-
-variable "network" {
+variable "network_config" {
   description = "Network configuration"
   type = map(object({
     vsphere_network_name = string
@@ -118,32 +39,19 @@ variable "network" {
     ip_range = optional(string)
     gateway = optional(string)
     nameserver = optional(string)
-    nodegroups = string
   }))
-}
 
-#variable "ip_range_managers" {
-#  description = "IP addresses to be assigned to managers VMs"
-#  type        = string
-#}
-#
-#variable "ip_range_workers" {
-#  description = "IP addresses to be assigned to worker VMs"
-#  type        = string
-#  default     = ""
-#}
-#
-#variable "network_gateway" {
-#  description = "Gateway IP address to be used as default gateway for VMs"
-#  type        = string
-#  default     = ""
-#}
-#
-#variable "nameserver" {
-#  description = "DNS to be added to the VM network configuration"
-#  type        = string
-#  default     = ""
-#}
+  default = null
+  
+  # this validation make sure that all network parameters are set if type of network is "IPAM"
+  validation {
+    condition = alltrue([for k, v in var.network_config: v.type == "IPAM" && 
+                          v.ip_range != null && 
+                          v.gateway != null 
+                          && v.nameserver != null])
+    error_message = "Network type is IPAM, but necessary variables are not specified (ip_range, gateway, and/or nameserver) for one or many networks"
+  }
+}
 
 variable "cluster_name" {
   description = "Name of the cluster (will be used as prefix for cluster nodes)"
@@ -159,24 +67,6 @@ variable "dockerhub_password" {
   description = "Docker Hub password to add docker hub auth to k0s cluster"
   default     = "password"
 }
-
-#variable "manager_disk_size" {
-#  description = "Manager disk size in GBs"
-#  default     = 40
-#}
-#
-#variable "worker_disk_size" {
-#  description = "Worker disk size in GBs"
-#  default     = 60
-#}
-#
-#variable "vm_user" {
-#  description = "Username that will be used to login to the VM"
-#}
-#
-#variable "firmware" {
-#  description = "Firmware to be used for the VM. Possible options are 'bios' and 'efi'"
-#}
 
 variable "external_address" {
   description = "IP address or DNS name that will be used to access the cluster"

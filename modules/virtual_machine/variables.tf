@@ -1,9 +1,9 @@
-variable "user_data" {
-    description = "Base64 encoded cloud-init user-data"
+variable "role" {
+  description = "Node role"
 }
 
-variable "meta_data" {
-    description = "Base64 encoded cloud-init meta-data" 
+variable "network_config" {
+    description = "VM network configuration"
 }
 
 variable "hostname" {
@@ -63,9 +63,9 @@ variable "docker_hub_pass" {
   default     = "password"
 }
 
-#variable "vm_user" {
-#  description = "Username that will be used to login to the VM"
-#}
+variable "vm_user" {
+  description = "Username that will be used to login to the VM"
+}
 
 variable "node_count" {
   description = "Number of nodes"
@@ -73,4 +73,12 @@ variable "node_count" {
 
 variable "firmware" {
   description = "Firmware to be used for the VM. Possible options are 'bios' and 'efi'"
+}
+
+variable "external_address" {
+  description = "Address that will be used to connect to MKE4 cluster"
+}
+
+variable "public_ssh_key" {
+  description = "Public SSH key that will be added to authorized_keys"
 }

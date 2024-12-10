@@ -1,5 +1,9 @@
 # terraform-mirantis-mke4-vsphere
 
+## Prerequisites
+
+1. Python version 3 needs to be installed on the machine, where TF will be executed
+
 ## Quickstart
 
 1. Make a copy of `terraform.tfvars.example` and name it `terraform.tfvars`
