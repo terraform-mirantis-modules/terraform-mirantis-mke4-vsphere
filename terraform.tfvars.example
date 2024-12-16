@@ -1,0 +1,74 @@
+# vSphere resources
+# Paths to most of the resources can be obtained by using govc tool (https://github.com/vmware/govmomi/blob/main/govc/README.md)
+vsphere = {
+  server = "vcenter.something.net"	# URL or IP address of vSphere 
+  user = "user@vmware.vmw" # vSphere username
+  password = "somepass"	# vSphere password
+  datacenter = "DC"
+  resource_pool = "/DC/host/RES/Resources/Some-ResPool"
+  datastore = "/DC/datastore/some-datastore"
+  folder =  "/some/folder"
+}
+
+# This name will be used as a prefix for VM names
+# E.g. if cluster_name = "mke4-cluster", then names of managers will look like this:
+# "mke4-cluster-controllers-0", "mke4-cluster-controllers-1", etc.
+# Names of workers will look like this:
+# "mke4-cluster-workers-0", "mke4-cluster-workers-1", etc.
+cluster_name = "mke4-cluster"
+
+# Docker Hub credentials that will be used to add to containerd configuration.
+# It will allow to pull docker images without hitting request limits.
+dockerhub_user = "user"
+dockerhub_password = "password"
+
+# IP address or domain name that will be used to access MKE4 cluster
+external_address = "172.16.38.150"
+
+# Nested nodegroups variable is used to define group of nodes with same parameters
+nodegroups = {
+  "controllers" = {
+    role = "controller+worker" # MKE4 role, currently only "controller+worker" and "worker" are available
+    count = 1 # Number of nodes
+    template_name = "/DC/vm/RES/Ubuntu-20.04-tmpl" # VM template to use to clone nodes from
+    ssh_private_key_file = "/Users/user/.ssh/id_rsa" # Path to private SSH key
+    ssh_public_key_file = "/Users/user/.ssh/id_rsa.pub" # Path to public SSH key
+    cpu = 4 # Number of CPU cores
+    ram = 8128 # RAM in MBs
+    disk = 60 # Disk size in GBs
+    firmware = "bios" # firmware to use for nodes, "bios" and "efi" are possible options
+    user = "ubuntu" # Name of the user that will be used to access the cluster through SSH. This user will be in sudoers group
+    network_config_name = "controllers_network" # Name of the network config that is defined later in this file.
+  },
+  "workers" = {
+    role = "worker"
+    count = 1
+    template_name = "/DC/vm/RES/Ubuntu-20.04-tmpl" 
+    ssh_private_key_file = "/Users/user/.ssh/id_rsa"
+    ssh_public_key_file = "/Users/user/.ssh/id_rsa.pub"
+    cpu = 4
+    ram = 8128
+    disk = 60
+    firmware = "bios"
+    user = "ubuntu"
+    network_config_name = "workers_network"
+  },
+}
+
+# Network configuration, usually one per nodegroup
+network_config = {
+  "controllers_network" = {
+    vsphere_network_name = "VMWare_VMs_No_DHCP" # Name of network object in vSphere
+    type = "IPAM"	# Type of network, either "IPAM" or "DHCP". If IPAM is used, then three variables below need to be specified
+    ip_range = "172.16.38.149-172.16.38.149"
+    gateway = "172.16.38.1"
+    nameserver = "172.18.176.6"
+  },
+  "workers_network" = {
+    vsphere_network_name = "VMWare_VMs_No_DHCP"
+    type = "IPAM"
+    ip_range = "172.16.38.151-172.16.38.153"
+    gateway = "172.16.38.1"
+    nameserver = "172.18.176.6"
+  }
+}
